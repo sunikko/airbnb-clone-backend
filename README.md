@@ -89,3 +89,7 @@ poetry add django
 			- Text
 			- User
 			- Room
+
+```
+Poetry add Pillow
+```
