@@ -13,3 +13,79 @@ poetry init
 ```
 poetry add django
 ```
+
+- All Models 
+	- Users
+		- Profile Photo
+		- Gender
+		- Language
+		- Currency Options
+
+	- Rooms
+		- Country
+		- City
+		- Price Per Night
+		- Description
+		- Owner
+		- the number of Rooms
+		- the number of Toilet
+		- Address
+		- Pet Friendly
+		- Category
+		- Type of Place (Entire Place| Private Room| Shared Room)
+		- Amenities (Many to Many) 
+			- Name
+
+	- Experiences
+		- Country
+		- City
+		- Name
+		- Host
+		- Price
+		- Description
+		- Address
+		- Start Time
+		- End Time
+		- Category
+		- Materials (Many to Many)
+			- Name
+			- Description
+
+	- Categories
+		- Kind (Room|Experience)
+		- Name
+
+	- Reviews
+		- Review
+		- Rating
+		- Room
+		- Experience
+		- User
+
+	- Wishlists
+		- Name
+		- Rooms
+		- Experiences
+		- User
+
+	- Bookings
+		- Kind (Room|Experience)
+		- Room
+		- Experience
+		- Check In
+		- Check Out
+		- Experience Date
+
+	- Photos
+		- File
+		- Description
+		- Room
+		- Experience
+        
+	- Messages
+		- Room
+			- Users
+		- Message
+			- Text
+			- User
+			- Room
