@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import House
+from .models import Room
 
 # Register your models here.
-@admin.register(House)
-class HouseAdmin(admin.ModelAdmin):
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
     fields = (
         "name",
         "address",

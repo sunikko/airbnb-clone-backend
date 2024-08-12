@@ -90,6 +90,8 @@ poetry add django
 			- User
 			- Room
 
+
+ImageField
 ```
 Poetry add Pillow
 ```

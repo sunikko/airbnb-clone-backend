@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class House(models.Model):
+class Room(models.Model):
     """
         Model Definition for Houses
     """
@@ -39,3 +39,14 @@ class House(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Amenity(models.Model):
+    """Amenity Definition"""
+    name = models.CharField(
+        max_length=150,
+    )
+    description = models.CharField(
+        max_length=150,
+        null=True,
+    )
