@@ -1,7 +1,8 @@
 from django.db import models
+from common.models import CommonModel
 
 # Create your models here.
-class Room(models.Model):
+class Room(CommonModel):
     """
         Model Definition for Houses
     """
@@ -24,7 +25,7 @@ class Room(models.Model):
         max_length=140,
     )
     pets_allowed =models.BooleanField(
-        verbose_name="Pets Allowed?",
+        verbose_name="Pets Allowed",
         default=True, 
         help_text="Does this house allow pets?",
     )
@@ -36,12 +37,15 @@ class Room(models.Model):
         "users.User", 
         on_delete=models.CASCADE,
     )
+    amenities = models.ManyToManyField(
+        "rooms.Amenity",
+    )
 
     def __str__(self):
         return self.name
     
 
-class Amenity(models.Model):
+class Amenity(CommonModel):
     """Amenity Definition"""
     name = models.CharField(
         max_length=150,
