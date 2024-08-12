@@ -5,6 +5,11 @@ class House(models.Model):
     """
         Model Definition for Houses
     """
+    class RoomKindChoices(models.TextChoices):
+        ENTIRE_PLACE = ("entire_place", "Entire Place")
+        PRIVATE_ROOM = ("private_room", "Private Room")
+        SHARED_ROOM = "shared_room", "Shared Room"
+
     name = models.CharField(
         max_length=140,
     )
@@ -12,6 +17,8 @@ class House(models.Model):
         verbose_name="Price",
         help_text="Positive Numbers Only?",
     )
+    roooms = models.PositiveIntegerField()
+    toilets = models.PositiveIntegerField()
     description = models.TextField()
     address = models.CharField(
         max_length=140,
@@ -20,6 +27,10 @@ class House(models.Model):
         verbose_name="Pets Allowed?",
         default=True, 
         help_text="Does this house allow pets?",
+    )
+    kind = models.CharField(
+        max_length=20,
+        choices=RoomKindChoices.choices,
     )
     owner = models.ForeignKey(
         "users.User", 
