@@ -13,13 +13,20 @@ class Room(CommonModel):
 
     name = models.CharField(
         max_length=140,
+        default="",
     )
     price_per_night = models.PositiveIntegerField(
         verbose_name="Price",
         help_text="Positive Numbers Only?",
     )
-    roooms = models.PositiveIntegerField()
-    toilets = models.PositiveIntegerField()
+    rooms = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+    )
+    toilets = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+    )
     description = models.TextField()
     address = models.CharField(
         max_length=140,
@@ -41,7 +48,7 @@ class Room(CommonModel):
         "rooms.Amenity",
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
     
 
@@ -53,4 +60,8 @@ class Amenity(CommonModel):
     description = models.CharField(
         max_length=150,
         null=True,
+        blank=True,
     )
+
+    def __str__(self) -> str:
+        return self.name
