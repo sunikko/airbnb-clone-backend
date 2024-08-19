@@ -26,4 +26,28 @@ class Experience(CommonModel):
     start = models.TimeField()
     end = models.TimeField()
     description = models.TextField()
-    # perks = 
+    perks = models.ManyToManyField(
+        "experiences.Perk"
+    )
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Perk(CommonModel):
+    """ What is included on an Experience """
+    name = models.CharField(
+        max_length=100,
+    )
+    details = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+    )
+    explanation = models.TextField(
+        blank=True,
+        default="",
+    )
+
+    def __str__(self) -> str:
+        return self.name
