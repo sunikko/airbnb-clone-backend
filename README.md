@@ -14,6 +14,10 @@ poetry init
 poetry add django
 ```
 
+```
+poetry add djangorestframework
+```
+
 - All Models 
 	- Users
 		- Profile Photo
