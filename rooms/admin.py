@@ -17,6 +17,7 @@ class RoomAdmin(admin.ModelAdmin):
         "name", 
         "price_per_night",
         "kind",
+        "total_amenities",
         "owner",
         "address", 
         "pets_allowed",
