@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from .models import category
 from .serializers import CategorySerializer
@@ -24,8 +25,25 @@ def categories(request):
         else:
             return Response(serializer.errors)
 
-@api_view()
-def categoryDetails(reqest, pk):
-    category_obj = category.objects.get(pk=pk)
-    serializer = CategorySerializer(category_obj)
-    return Response(serializer.data)
+
+@api_view(["GET", "PUT"])
+def categoryDetails(request, pk):
+    try:
+        category_obj = category.objects.get(pk=pk)
+    except category_obj.DoesNotExist:
+        raise NotFound
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category_obj)
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = CategorySerializer(
+            category_obj,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            updated_category = serializer.save()
+            return Response(CategorySerializer(updated_category).data)
+        else:
+            return Response(serializer.errors)
