@@ -26,7 +26,7 @@ def categories(request):
             return Response(serializer.errors)
 
 
-@api_view(["GET", "PUT"])
+@api_view(["GET", "PUT", "DELETE"])
 def categoryDetails(request, pk):
     try:
         category_obj = category.objects.get(pk=pk)
@@ -47,3 +47,6 @@ def categoryDetails(request, pk):
             return Response(CategorySerializer(updated_category).data)
         else:
             return Response(serializer.errors)
+    elif request.method == "DELETE":
+        category_obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
