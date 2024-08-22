@@ -4,15 +4,18 @@ from .models import category
 from .serializers import CategorySerializer
 
 
-@api_view()
+@api_view(["GET", "POST"])
 def categories(request):
-    all_categories = category.objects.all()
-    serializer = CategorySerializer(all_categories, many=True) #rest_framework.serializers.Serializer translate django obj to json type
-    return Response(
-        {
-            "categories": serializer.data,
-        }
-    ) #rest_framework.response response deploy serializer.data
+    if request.method == "GET":
+        all_categories = category.objects.all()
+        serializer = CategorySerializer(all_categories, many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        category.objects.create(
+            name=request.data["name"],
+            kind=request.data["kind"],
+        )
+        return Response({"created": True})
 
 def categoryDetails(reqest):
     pass
