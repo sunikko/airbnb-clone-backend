@@ -2,19 +2,18 @@ from django.db import models
 from common.models import CommonModel
 
 
-class CategoryChoice(models.TextChoices):
-    ROOMS  = "rooms", "Rooms"
-    EXPERIENCES = "experiences", "Experiences"
-
-
 class category(CommonModel):
     """ Room or experience Category """
+    class CategoryKindChoices(models.TextChoices):
+        ROOMS  = "rooms", "Rooms"
+    EXPERIENCES = "experiences", "Experiences"
+
     name = models.CharField(
         max_length=50,
     )
     kind = models.CharField(
         max_length=15,
-        choices=CategoryChoice.choices,
+        choices=CategoryKindChoices.choices,
     )
 
     def __str__(self) -> str:

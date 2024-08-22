@@ -14,14 +14,13 @@ def categories(request):
     elif request.method == "POST":        
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
-            # category.objects.create(
-            #     name=request.data["name"],
-            #     kind=request.data["kind"],
-            # )
             if 'pk' in request.data:
                 return Response({"error": "The 'pk' field should not be included in the request."}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({"created": True})
+                new_category = serializer.save() # call create() function on serializer
+                return Response(
+                    CategorySerializer(new_category).data
+                )
         else:
             return Response(serializer.errors)
 
