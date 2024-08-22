@@ -17,5 +17,8 @@ def categories(request):
         )
         return Response({"created": True})
 
-def categoryDetails(reqest):
-    pass
+@api_view()
+def categoryDetails(reqest, pk):
+    category_obj = category.objects.get(pk=pk)
+    serializer = CategorySerializer(category_obj)
+    return Response(serializer.data)
