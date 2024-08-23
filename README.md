@@ -99,3 +99,21 @@ ImageField
 ```
 Poetry add Pillow
 ```
+
+- API Views
+- URLs
+##Categories
+GET POST /categories
+GET PUT DELETE /categories/1
+
+##Amenities
+GET POST /rooms/amenities
+GET PUT DELETE /rooms/amenities/1
+
+##Rooms
+GET POST /rooms
+GET PUT DELETE /rooms/1
+
+##Perks
+GET POST /experiences/perks
+GET PUT DELETE /experiences/perks/1
