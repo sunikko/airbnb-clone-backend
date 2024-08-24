@@ -23,6 +23,7 @@ class RoomAdmin(admin.ModelAdmin):
         "owner",
         "address", 
         "pets_allowed",
+        "rating",
         "created_at",
         "updated_at",                                                                                                                                                        
     )
