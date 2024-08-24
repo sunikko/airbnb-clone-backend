@@ -1,7 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError
+from rest_framework.exceptions import (
+    NotFound,
+    NotAuthenticated,
+    ParseError,
+    PermissionDenied,
+)
+from django.db import transaction
 from .models import Amenity, Room
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
 from categories.models import category
@@ -76,18 +82,19 @@ class RoomListView(APIView):
                         raise ParseError("The category kind should be 'rooms'")
                 except category.DoesNotExist:
                     raise ParseError("Category not found")
-                room_obj = serializer.save(
-                    owner=request.user, # when call create() function with validatedata it replaces owner
-                    category=category_obj,
-                )
-                amenities = request.data.get("amenities")
-                for amenity_pk in amenities:
-                    try:
-                        amenity_obj = Amenity.objects.get(pk=amenity_pk)
-                        room_obj.amenities.add(amenity_obj) # many to many field
-                    except Amenity.DoesNotExist:
-                        room_obj.delete()
-                        raise ParseError(f"Amenity with id {amenity_pk} not found")
+                try:
+                    with transaction.atomic(): # one transaction - doesn't really save a room on DB
+                        room_obj = serializer.save(
+                            owner=request.user, # when call create() function with validatedata it replaces owner
+                            category=category_obj,
+                        )
+                        amenities = request.data.get("amenities")
+                        for amenity_pk in amenities:
+                            # remove try: ecept Amenity.DoesNotExist: room.delete() to make it error for transaction
+                            amenity_obj = Amenity.objects.get(pk=amenity_pk)
+                            room_obj.amenities.add(amenity_obj) # many to many field
+                except Exception:
+                     raise ParseError("Amenity not found")
                 return Response(
                     RoomListSerializer(room_obj).data,
                 )
@@ -109,3 +116,48 @@ class RoomDetailView(APIView):
         serializer = RoomDetailSerializer(room_obj)
         return Response(serializer.data)
     
+    def delete(self, request, pk):
+        room_obj = self.get_object(pk)
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+        if room_obj.owner != request.user:
+            raise PermissionDenied
+        room_obj.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    def put(self, request, pk):
+        room_obj = self.get_object(pk)
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+        if room_obj.owner != request.user:
+            raise PermissionDenied
+        serializer = RoomDetailSerializer(
+            room_obj,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            category_obj=room_obj.category
+            category_pk = request.data.get("category")
+            if category_pk:
+                try:
+                    category_obj = category.objects.get(pk=category_pk)
+                    if category_obj.kind == category.CategoryKindChoices.EXPERIENCES:
+                        raise ParseError("The category kind should be 'rooms'")
+                except category.DoesNotExist:
+                    raise ParseError("category does not exist")
+            amenities_list = list(room_obj.amenities.all())
+            amenities = request.data.get("amenities")
+            if amenities:
+                amenities_list = []
+                for amenity_pk in amenities:
+                    try:
+                        amenity_obj = Amenity.objects.get(pk=amenity_pk)
+                        amenities_list.append(amenity_obj)
+                    except Exception as e:
+                        raise ParseError(f"Amenity not found {e}")
+            updated_room_obj = serializer.save(category=category_obj)
+            updated_room_obj.amenities.set(amenities_list)
+            return Response(RoomDetailSerializer(updated_room_obj).data)
+        else:
+            return Response(serializer.errors)
