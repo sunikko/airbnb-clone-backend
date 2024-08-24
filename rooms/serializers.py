@@ -14,12 +14,13 @@ class AmenitySerializer(ModelSerializer):
 class RoomListSerializer(ModelSerializer):
     class Meta:
         model = Room
-        fields = (
-            "pk",
-            "name",
-            "address",
-            "price_per_night",
-        )
+        fields = "__all__"
+        # fields = (
+        #     "pk",
+        #     "name",
+        #     "address",
+        #     "price_per_night",
+        # )
 
 class RoomDetailSerializer(ModelSerializer):
     owner = TinyUserSerializer(read_only=True)

@@ -80,6 +80,14 @@ class RoomListView(APIView):
                     owner=request.user, # when call create() function with validatedata it replaces owner
                     category=category_obj,
                 )
+                amenities = request.data.get("amenities")
+                for amenity_pk in amenities:
+                    try:
+                        amenity_obj = Amenity.objects.get(pk=amenity_pk)
+                        room_obj.amenities.add(amenity_obj) # many to many field
+                    except Amenity.DoesNotExist:
+                        print(f"Amenity with id {amenity_pk} not found")
+                        pass
                 return Response(
                     RoomListSerializer(room_obj).data,
                 )
