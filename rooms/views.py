@@ -86,8 +86,8 @@ class RoomListView(APIView):
                         amenity_obj = Amenity.objects.get(pk=amenity_pk)
                         room_obj.amenities.add(amenity_obj) # many to many field
                     except Amenity.DoesNotExist:
-                        print(f"Amenity with id {amenity_pk} not found")
-                        pass
+                        room_obj.delete()
+                        raise ParseError(f"Amenity with id {amenity_pk} not found")
                 return Response(
                     RoomListSerializer(room_obj).data,
                 )
