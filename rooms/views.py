@@ -8,9 +8,12 @@ from rest_framework.exceptions import (
     PermissionDenied,
 )
 from django.db import transaction
+from django.conf import settings
 from .models import Amenity, Room
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
 from categories.models import category
+from reviews.serializers import ReviewSerializer
+from medias.serializers import PhotoSerializer
 
 
 class Amenities(APIView):
@@ -166,5 +169,51 @@ class RoomDetailView(APIView):
             updated_room_obj = serializer.save(category=category_obj)
             updated_room_obj.amenities.set(amenities_list)
             return Response(RoomDetailSerializer(updated_room_obj).data)
+        else:
+            return Response(serializer.errors)
+
+
+class RoomReviews(APIView):
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            raise NotFound
+        
+    def get(self, request, pk):
+        try:
+            page = request.query_params.get("page", 1)
+            page = int(page)
+        except ValueError:
+            page = 1
+        page_size = settings.PAGE_SIZE
+        start = (page-1) * page_size
+        end = start + page_size
+        room_obj = self.get_object(pk)
+        serializer = ReviewSerializer(
+            room_obj.reviews.all()[start:end], # django sql query LIMIT: page_size & OFFSET:start
+            many=True,
+        )
+        return Response(serializer.data)
+    
+
+class RoomPhotos(APIView):
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            return NotFound
+        
+    def post(self, request, pk):
+        room = self.get_object(pk)
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+        if request.user != room.owner:
+            raise PermissionDenied
+        serializer = PhotoSerializer(data=request.data)
+        if serializer.is_valid():
+            photo = serializer.save(room=room)
+            serializer = PhotoSerializer(photo)
+            return Response(serializer.data)
         else:
             return Response(serializer.errors)

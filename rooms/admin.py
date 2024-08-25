@@ -4,17 +4,6 @@ from .models import Room, Amenity
 # Register your models here.
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    fields = (
-        "owner",
-        "name",
-        "address",
-        ("price_per_night", "pets_allowed"),
-        "kind",
-        "category",
-        "rooms",
-        "toilets",
-        "amenities",
-    )
     list_display = (
         "name", 
         "price_per_night",

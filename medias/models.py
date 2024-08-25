@@ -8,7 +8,7 @@ class Photo(CommonModel):
     for room or experience: ForeignKey, CASCADE, null=True
     """
 
-    file = models.ImageField()
+    file = models.URLField() # will use cloud storage instead
     description = models.CharField(
         max_length=140,
     )
@@ -37,7 +37,7 @@ class Video(CommonModel):
     each experience only has one video
     '''
 
-    file = models.FileField()
+    file = models.URLField()
     experience = models.OneToOneField(
         "experiences.Experience",
         on_delete=models.CASCADE,
