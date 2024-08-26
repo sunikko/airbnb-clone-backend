@@ -10,6 +10,7 @@ from rest_framework.exceptions import (
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.db import transaction
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from .models import Amenity, Room
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
 from categories.models import category
@@ -174,11 +175,11 @@ class RoomDetailView(APIView):
 
 
 class RoomReviews(APIView):
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get_object(self, pk):
-        try:
-            return Room.objects.get(pk=pk)
-        except Room.DoesNotExist:
-            raise NotFound
+        return get_object_or_404(Room, pk=pk)
         
     def get(self, request, pk):
         try:
@@ -196,6 +197,20 @@ class RoomReviews(APIView):
         )
         return Response(serializer.data)
     
+    def post(self, request, pk):
+        room_obj = self.get_object(pk)
+        if request.user != room_obj.owner:
+            raise PermissionDenied("You do not have permission to review your own room.")
+
+        serializer = ReviewSerializer(data=request.data)
+        if serializer.is_valid():
+            review_obj = serializer.save(
+                user=request.user,
+                room=room_obj,
+            )
+            review_serializer = ReviewSerializer(review_obj)
+            return Response(review_serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
 class RoomPhotos(APIView):
     

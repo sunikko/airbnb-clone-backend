@@ -8,5 +8,5 @@ class PhotoSerializer(ModelSerializer):
         fields = (
             "pk",
             "file",
-            "descripton",
+            "description",
         )
