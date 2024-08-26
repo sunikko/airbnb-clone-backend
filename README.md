@@ -124,3 +124,8 @@ DELETE /rooms/1/photos/1 -> DELETE /api/v1/medias/photos/1
 ##Perks
 GET POST /experiences/perks
 GET PUT DELETE /experiences/perks/1
+
+
+##Wishlists
+GET POST /wishlists
+GET PUT DELETE /wishlist/1
