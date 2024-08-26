@@ -115,7 +115,7 @@ GET POST /rooms
 GET PUT DELETE /rooms/1
 
 GET /rooms/1/amenities
-GET /rooms/1/reviews
+GET POST /rooms/1/reviews
 POST /rooms/1/photos # adding photo
 
 DELETE /rooms/1/photos/1 -> DELETE /api/v1/medias/photos/1 
