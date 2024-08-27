@@ -255,10 +255,11 @@ class RoomBookings(APIView):
         bookings = Booking.objects.filter(
             room=room,
             kind=Booking.BookingKindChoices.ROOM,
-            check_in__gt=now
+            check_in__gt=now,
         )
         serializer = PublicBookingSerializer(bookings, many=True)
         return Response(serializer.data)
+
 
     def post(self, request, pk):
         room = self.get_object(pk)
