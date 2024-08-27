@@ -129,3 +129,9 @@ GET PUT DELETE /experiences/perks/1
 ##Wishlists
 GET POST /wishlists
 GET PUT DELETE /wishlist/1
+PUT DELETE /wishlist/1/rooms/2
+
+##Bookings
+GET POST /rooms/1/bookings
+
+

@@ -12,3 +12,17 @@ class PublicBookingSerializer(serializers.ModelSerializer):
             "experience_time",
             "guests",
         )
+
+
+class CreateRoomBookingSerializer(serializers.ModelSerializer):
+    
+    check_in = serializers.DateField()
+    check_out = serializers.DateField()
+
+    class Meta:
+        model = Booking
+        fields = (
+            "check_in",
+            "check_out",
+            "guests",
+        )
