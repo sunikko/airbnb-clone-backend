@@ -132,6 +132,12 @@ GET PUT DELETE /wishlist/1
 PUT DELETE /wishlist/1/rooms/2
 
 ##Bookings
-GET POST /rooms/1/bookings
+GET POST DELETE /rooms/1/bookings
 
+##Users
+GET PUT /myprofile
+GET /users/username #public
+POST /users
+POST /users/log-in
+POST /users/change-password
 
