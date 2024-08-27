@@ -10,6 +10,7 @@ from rest_framework.exceptions import (
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.db import transaction
 from django.conf import settings
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from .models import Amenity, Room
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
@@ -250,9 +251,11 @@ class RoomBookings(APIView):
         
     def get(self, requset, pk):
         room = self.get_object(pk)
+        now = timezone.localtime(timezone.now()).date()
         bookings = Booking.objects.filter(
             room=room,
             kind=Booking.BookingKindChoices.ROOM,
+            check_in__gt=now
         )
         serializer = PublicBookingSerializer(bookings, many=True)
         return Response(serializer.data)
