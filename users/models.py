@@ -35,10 +35,12 @@ class User(AbstractUser):
     language = models.CharField(
         max_length=2,
         choices=LanguageChoices.choices,
+        default="en"
     )
     currency = models.CharField(
         max_length=5,
         choices=CurrencyChoices.choices,
+        default="gbp",
     )
     avatar = models.URLField(
         blank=True,
