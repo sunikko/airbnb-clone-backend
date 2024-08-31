@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import ParseError, NotFound
 from users.models import User
 from . import serializers
+from reviews.serializers import ReviewSerializer
 
 class Myprofile(APIView):
     
@@ -100,3 +102,28 @@ class LogOut(APIView):
     def post(self, request):
         logout(request)
         return Response({"ok": "bye!"})
+        
+
+class UserReviews(APIView):
+    
+    def get_object(self, username):
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise NotFound
+        
+    def get(self, request, username):
+        try:
+            page = request.query_params.get("page", 1)
+            page = int(page)
+        except ValueError:
+            page = 1
+        page_size = settings.PAGE_SIZE
+        start = (page-1) * page_size
+        end = start + page_size
+        user_obj = self.get_object(username)
+        serializer = ReviewSerializer(
+            user_obj.reviews.all()[start:end],
+            many=True,
+        )
+        return Response(serializer.data)
