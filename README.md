@@ -136,8 +136,9 @@ GET POST DELETE /rooms/1/bookings
 
 ##Users
 GET PUT /myprofile
-GET /users/username #public
+GET /users/@username #public
+GET /users/@username/reviews
 POST /users
 POST /users/log-in
-POST /users/change-password
+PUT /users/change-password
 
