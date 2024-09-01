@@ -150,3 +150,9 @@ GET POST /perks
 GET PUT DELETE /perks/1
 GET POST /experiences/1/bookings
 GET PUT DELETE /experiences/1/bookings/2
+
+
+#graphql: strawberry
+```
+Poetry add strawberry-graphql-django
+```
