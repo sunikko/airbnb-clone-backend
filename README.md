@@ -156,3 +156,7 @@ GET PUT DELETE /experiences/1/bookings/2
 ```
 Poetry add strawberry-graphql-django
 ```
+
+```
+Poetry add pyjwt
+```
